@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using WPF_MVVM_TEMPLATE.Presentation.ViewModel;
-namespace WPF_MVVM_TEMPLATE.Presentation;
+using NNTP_NewsReader.Presentation.ViewModel;
+
+namespace NNTP_NewsReader.Presentation;
 
 /// <summary>
 /// Interaction logic for App.xaml

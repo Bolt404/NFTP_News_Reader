@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using WPF_MVVM_TEMPLATE.Presentation.ViewModel;
+﻿using NNTP_NewsReader.Presentation.ViewModel;
+using NNTP_NewsReader.Presentation;
 
-namespace WPF_MVVM_TEMPLATE.Presentation
+namespace NNTP_NewsReader.Presentation
 {
     public class ViewModelController : IViewModelController
     {

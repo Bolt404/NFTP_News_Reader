@@ -1,6 +1,6 @@
-﻿using WPF_MVVM_TEMPLATE.Presentation.ViewModel;
+﻿using NNTP_NewsReader.Presentation.ViewModel;
 
-namespace WPF_MVVM_TEMPLATE.Presentation;
+namespace NNTP_NewsReader.Presentation;
 
 public interface IViewModelController
 {

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace WPF_MVVM_TEMPLATE.Presentation;
+namespace NNTP_NewsReader.Presentation;
 
 public class CommandBase : ICommand
 {

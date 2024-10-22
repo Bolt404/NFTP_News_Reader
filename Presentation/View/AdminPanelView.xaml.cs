@@ -1,6 +1,8 @@
-﻿using System.Windows.Controls;
+﻿using System.Windows;
+using System.Windows.Controls;
+using NNTP_NewsReader.Infrastructure;
 
-namespace WPF_MVVM_TEMPLATE.Presentation.View;
+namespace NNTP_NewsReader.Presentation.View;
 
 public partial class AdminPanelView : UserControl
 {
@@ -8,4 +10,10 @@ public partial class AdminPanelView : UserControl
     {
         InitializeComponent();
     }
+
+    private async void ButtonBase_OnClick(object sender, RoutedEventArgs e)
+    {
+        
+    }
+    
 }

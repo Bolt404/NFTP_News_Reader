@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="WPF_MVVM_TEMPLATE.Presentation.View.AdminPanelView"
+﻿<UserControl x:Class="NNTP_NewsReader.Presentation.View.AdminPanelView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:WPF_MVVM_TEMPLATE.Presentation.View.Behaviors"
+             xmlns:local="clr-namespace:NNTP_NewsReader.Presentation.View.Behaviors"
              xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -11,7 +11,7 @@
         
         <StackPanel DockPanel.Dock="Left" Background="Red">
         
-            <Label Content="Adming panle">
+            <Label Content="Adming Panel">
                 
             </Label>
             <Label Content="feeling"></Label>
@@ -25,12 +25,10 @@
             <Button 
                 Content="Click me"
                 Width="200" 
-                Height="30">
-            
-                <b:Interaction.Behaviors>
-                    <local:FunBehavior></local:FunBehavior>
-                </b:Interaction.Behaviors>
-            
+                Height="30"
+                Click="ButtonBase_OnClick"
+                >
+                
             </Button>    
         </StackPanel>
         

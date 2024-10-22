@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace WPF_MVVM_TEMPLATE.Infrastructure;
+namespace NNTP_NewsReader.Infrastructure;
 
 public class FileService
 {

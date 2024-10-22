@@ -1,9 +1,8 @@
 ﻿using System.ComponentModel;
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
-using WPF_MVVM_TEMPLATE.Presentation.View;
+using NNTP_NewsReader.Presentation;
 
-namespace WPF_MVVM_TEMPLATE.Presentation.ViewModel;
+namespace NNTP_NewsReader.Presentation.ViewModel;
 
 public abstract class ViewModelBase : INotifyPropertyChanged
 {
