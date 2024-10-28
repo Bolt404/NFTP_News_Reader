@@ -1,0 +1,43 @@
+<UserControl x:Class="NNTP_NewsReader.Presentation.View.Connection"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Height="450" Width="800">
+    <StackPanel >
+        <Label Content="Connection Panel"></Label>
+        <WrapPanel HorizontalAlignment="Center">
+            <Label Content="Server" />
+            <TextBox VerticalAlignment="Center"
+                       Text=""
+                       Width="150"
+                       Name="TextBoxServerAddress"/>
+            <Label Content="Port"/>
+            <TextBox PreviewTextInput="TextBox_NumbersOnly"
+                       VerticalAlignment="Center"
+                       Text=""
+                       MaxLength="4"
+                       Width="30"
+                       Name="TextBoxPort"/>
+        </WrapPanel>
+        <WrapPanel HorizontalAlignment="Center">
+            <Label Content="User Name" />
+            <TextBox VerticalAlignment="Center"
+                     Text=""
+                     Width="150"
+                     Name="TextBoxUserName"/>
+        </WrapPanel>
+        <WrapPanel HorizontalAlignment="Center"
+                   >
+            <Label Content="Password" />
+            <TextBox VerticalAlignment="Center"
+                     Text=""
+                     Width="150"
+                     Name="TextBoxPassword"/>
+        </WrapPanel>
+        <Button Content="CONNECT"
+                Width="200"
+                Click="ButtonConnect_OnClick"/>
+    </StackPanel>
+</UserControl>

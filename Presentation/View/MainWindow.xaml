@@ -13,11 +13,26 @@
         <DataTemplate x:Name="blueViewTemplate" DataType="{x:Type viewModels:AdminPanelViewModel}">
             <views:AdminPanelView />
         </DataTemplate>
+        <DataTemplate x:Name="ConnectionView" DataType="{x:Type viewModels:ConnectionViewModel}">
+            <views:Connection />
+        </DataTemplate>
         
     </Window.Resources>
     
-    <StackPanel>
-        <ContentControl Content="{Binding CurrentViewModel}" />
-    </StackPanel>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Connect"
+                          Click="MenuItemConnect_OnClick"/>
+                <MenuItem Header="_Disconnect"
+                          Click="MenuItemDisconnect_OnClick"/>
+            </MenuItem>
+        </Menu>
+        <StackPanel>
+            <ContentControl Content="{Binding CurrentViewModel}" />
+        </StackPanel>
+    </DockPanel>
+
+
     
 </Window>

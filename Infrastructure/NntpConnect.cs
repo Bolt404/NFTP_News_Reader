@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
+using System.Windows;
 
 namespace NNTP_NewsReader.Infrastructure;
 
@@ -19,7 +20,7 @@ public class NntpConnect
     private TcpClient tcpClient;
     private NetworkStream networkStream;
     private StreamReader reader;
-    private bool isConnected;
+    public bool isConnected = false;
     private bool isLoggedIn = false;
     private StreamWriter streamWriter;
 
@@ -45,7 +46,7 @@ public class NntpConnect
     }
 
 
-    public async Task<string> Connect(string server, int port)
+    public async Task<ENntpResponseCodes> Connect(string server, int port)
     {
         if (isConnected)
         {
@@ -58,57 +59,121 @@ public class NntpConnect
             await tcpClient.ConnectAsync(server, port);
             networkStream = tcpClient.GetStream();
             reader = new StreamReader(networkStream, Encoding.ASCII);
-        
-            string responseCode = (await reader.ReadLineAsync())?.Substring(0, 3) ?? throw new InvalidOperationException();
-            Console.WriteLine("Response Code Connection : " + responseCode);
-
+            
             isConnected = true;
+            
+            Console.WriteLine($"Connecting to {server}:{port} | {isConnected}");
+            var responseCode = HandleResponse(ParseResponseCodeStringToEnum(await reader.ReadLineAsync()));
 
-            return responseCode;
+            return await responseCode;
         }
         catch (Exception e)
         {
-            
-            string responseCode = (await reader.ReadLineAsync())?.Substring(0, 3) ?? throw new InvalidOperationException();
-
             Console.WriteLine(e);
             throw;
         }
     }
-
-    public async Task<string> Login(string username, string password)
+    /// <summary>
+    /// Logs into a NNTP using username and Password.
+    /// Doing both operations at once as it'll hardly ever make sense just to do user without password.
+    /// </summary>
+    /// <param name="username"></param>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    /// <exception cref="InvalidOperationException"></exception>
+    public async Task<ENntpResponseCodes> Login(string username, string password)
     {
         Console.WriteLine("Login: " + username);
+        //Checker om vi har en connection og om vi er logged ind.
         if (!isConnected || isLoggedIn)
         {
-            throw new InvalidOperationException("No active connection to login.");
+            throw new InvalidOperationException($"{isConnected} : No active connection to login \n {isLoggedIn} : Already logged in.");
         } 
         
-        streamWriter = new StreamWriter(networkStream, Encoding.ASCII)
+        ENntpResponseCodes userResponse = await SendMessage($"AUTHINFO USER {username}");
+        await HandleResponse(userResponse);
+
+        if (userResponse == ENntpResponseCodes.SendPassword)
         {
-            AutoFlush = true
-        };
-        string messagetoSend = $"AUTHINFO USER {username}";
-        Console.WriteLine($"DEBUG MESSAGE BEING SEND: {messagetoSend}");
+            isLoggedIn = true;
+            userResponse = await SendMessage($"AUTHINFO PASS {password}");
+        }
+        
+        return await HandleResponse(userResponse);
+    }
+
+    private async Task<ENntpResponseCodes> SendMessage(string messagetoSend)
+    {
+        if (streamWriter == null)
+        {
+            streamWriter = new StreamWriter(networkStream, Encoding.ASCII)
+            {
+                AutoFlush = true
+            };  
+        } 
+        //messagetoSend = $"AUTHINFO USER {username}";
+        Console.WriteLine($"Message Being sent: {messagetoSend}");
         
         await streamWriter.WriteLineAsync(messagetoSend);
-        string responseCode = (await reader.ReadLineAsync())?.Substring(0, 3) ?? throw new InvalidOperationException();
-        Console.WriteLine("Response Code Login : " + responseCode);
-
+        var responseCode = ParseResponseCodeStringToEnum(await reader.ReadLineAsync());
         
         return responseCode;
     }
 
-    public void Disconnect()
+    private ENntpResponseCodes ParseResponseCodeStringToEnum(string responseString)
+    {
+        ENntpResponseCodes responseCode = (ENntpResponseCodes)int.Parse(responseString?.Substring(0, 3) ?? throw new InvalidOperationException("No response"));
+        return responseCode;
+    }
+
+    public async Task<ENntpResponseCodes> HandleResponse(ENntpResponseCodes code)
+    {
+        switch (code)
+        {
+            case ENntpResponseCodes.ConnectionReady:
+                Console.WriteLine($"{(int)code} : Connection successful.");
+                break;
+            case ENntpResponseCodes.AuthSuccess:
+                Console.WriteLine($"{(int)code} : Authentication Successful.");
+                break;
+            case ENntpResponseCodes.SendPassword:
+                Console.WriteLine($"{(int)code} : Server Requires Password.");
+                break;
+            case ENntpResponseCodes.CommandNotRecognised:
+                Console.WriteLine($"{(int)code} : Command Not Recognised.");
+                //Disconnect as we assume we need to start over due to the way the program is setup.
+                Disconnect();
+                throw new InvalidOperationException("A Command was Not Recognised");
+            case ENntpResponseCodes.SyntaxError:
+                Console.WriteLine($"{(int)code} : Syntax Error.");
+                break;
+            case ENntpResponseCodes.AccessRestricted:
+                Console.WriteLine($"{(int)code} : Access Restricted.");
+                break;
+            case ENntpResponseCodes.ConnectionClosed:
+                Console.WriteLine($"{(int)code} : Connection Closed - GoodBye!");
+                break;
+            default:
+                Console.WriteLine($"{(int)code} : Unhandled response code");
+                break;
+        }
+        return code;
+    }
+
+    public async Task Disconnect()
     {
         if (!isConnected)
         {
             throw new InvalidOperationException("No active connection to disconnect.");
         }
-
+        
+        isConnected = false;
+        
+        ENntpResponseCodes responseCode = await SendMessage("QUIT");
+        await HandleResponse(responseCode);
+        
         reader?.Close();
         networkStream?.Close();
         tcpClient?.Close();
-        isConnected = false;
     }
 }
